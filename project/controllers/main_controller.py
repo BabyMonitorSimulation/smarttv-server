@@ -10,7 +10,7 @@ client_tv = ClientTV()
 client_tv.subscribe()
 
 
-@app.route("/check", methods=["GET"])
+@app.route("/", methods=["GET"])
 def check():
     return "I'm working TV"
 

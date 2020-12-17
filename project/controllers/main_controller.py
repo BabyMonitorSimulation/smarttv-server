@@ -1,12 +1,13 @@
-from project import app, client_tv
+from project import app
 from project.model.tv_model import TV
 from project.util.response import construct_response
+from project.communication.client_tv import ClientTV
 from flask import request, render_template, send_from_directory, jsonify, send_file
 import json
 import requests
 
-
-tv = TV(False)
+client_tv = ClientTV()
+client_tv.subscribe()
 
 
 @app.route("/check", methods=["GET"])
@@ -16,19 +17,21 @@ def check():
 
 @app.route("/tv_receive", methods=["POST"])
 def receive_sm():
-    global tv
-    print(f"Receive {json.dumps(request.json, indent=4, sort_keys=True)}")
-    if tv.block:
-        print("Tv's blocked")
-        # TODO show message in screen
+    global client_tv
+    if client_tv.block:
+        print("Tv's locked")
+        data = {"msg": "Tv's locked"}
+        client_tv.publish_to_dojot(data)
         return (
             jsonify(construct_response("status", {"info": "Tv's blocked"}, "smp")),
             200,
         )
 
     else:
-        # TODO show message in screen
+        print(f"Receive {json.dumps(request.json, indent=4, sort_keys=True)}")
         print("Tv's unlocked")
+        data = {"msg": "Tv's unlocked"}
+        client_tv.publish_to_dojot(data)
         return (
             jsonify(construct_response("status", {"info": "Tv's unlocked"}, "smp")),
             200,
@@ -37,7 +40,8 @@ def receive_sm():
 
 @app.route("/change", methods=["POST"])
 def change():
-
+    global client_tv
+    
     command = request.json["lock"]
     client_tv.status = command
 

@@ -19,12 +19,11 @@ class ClientTV:
         self.client.subscribe("/gesad/f0bf6d/attrs")
 
     def callback(self, msg):
-        body = json.loads(msg.payload)
         data = {'msg': ''}
-        if self.status = 'unlocked': 
+        if self.status == 'unlocked': 
             data['msg'] = 'TV is unlocked'
         
-        elif self.status = 'locked': 
+        elif self.status == 'locked': 
             data['msg'] = 'TV is locked'
 
         self.publish_to_dojot(data)

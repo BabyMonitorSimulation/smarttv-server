@@ -31,4 +31,4 @@ def change_status():
 def get_status():
     global smtv
 
-    return smtv.status
+    return {'msg': smtv.status}

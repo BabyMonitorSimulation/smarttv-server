@@ -1,7 +1,6 @@
 from project import app
 from project.model.tv_model import TV
 from project.util.response import construct_response
-from project.communication.client_tv import ClientTV
 from flask import request, render_template, send_from_directory, jsonify, send_file
 import json
 import requests
@@ -27,7 +26,17 @@ def change_status():
         200,
     )
 
-@app.route("/get_status", method=["GET"])
+
+@app.route("/receive_msgs", methods=["POST"])
+def receive_msgs():
+    global smtv
+
+    print('Received Message')
+
+    return {'msg': smtv.status}
+
+
+@app.route("/get_status", methods=["GET"])
 def get_status():
     global smtv
 

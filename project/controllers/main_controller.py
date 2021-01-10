@@ -42,7 +42,7 @@ def receive_msgs():
         "type": "status",
     }
     client_tv.publish_to_dojot(data)
-    
+
     return jsonify(data), 200
 
 

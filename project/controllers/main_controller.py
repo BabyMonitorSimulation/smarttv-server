@@ -6,7 +6,7 @@ from flask import request, render_template, send_from_directory, jsonify, send_f
 import json
 import requests
 
-smtv = TV("unlocked")
+smtv = TV("locked")
 client_tv = ClientTV()
 
 
@@ -15,12 +15,20 @@ def check():
     return "I'm working TV"
 
 
-@app.route("/change_status", methods=["POST"])
+@app.route("/change_tv_status", methods=["POST"])
 def change_status():
     global smtv
 
     command = request.json["lock"]
-    smtv.status = command
+    smtv.status =  "locked" if command else "unlocked"
+
+    data = {
+        "msg": smtv.status,
+        "from": "tv",
+        "to": "smp",
+        "type": "status",
+    }
+    client_tv.publish_to_dojot(data)
 
     return (
         jsonify(
